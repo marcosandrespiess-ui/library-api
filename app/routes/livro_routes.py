@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from app.services.livro_service import LivroService
+from app.repositories.livro_repository import LivroRepository
 
 livro_bp = Blueprint("livros", __name__)
-service = LivroService()
+service = LivroService(repository=LivroRepository())
 
 @livro_bp.route("/livros", methods=["GET"])
 def listar_livros():

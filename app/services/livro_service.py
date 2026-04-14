@@ -2,8 +2,8 @@ from app.models.livro import Livro
 from app.repositories.livro_repository import LivroRepository
 
 class LivroService:
-    def __init__(self):
-        self.repository = LivroRepository()
+    def __init__(self, repository=None):
+        self.repository = repository or LivroRepository()
 
     def listar_todos(self):
         return self.repository.listar_todos()
