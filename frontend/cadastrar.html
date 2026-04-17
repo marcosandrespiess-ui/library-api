@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Livro</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>[ MINHA BIBLIOTECA ]</h1>
+        <span class="header-coins">NOVO LIVRO</span>
+        <a href="index.html" class="btn-novo">← VOLTAR</a>
+    </header>
+
+    <nav>
+        <a href="index.html" class="nav-item">TODOS</a>
+    </nav>
+
+    <main>
+        <div class="form-container">
+            <div class="form-card">
+                <h2>&gt; CADASTRAR LIVRO_</h2>
+                <form id="form-cadastro">
+                    <div class="campo">
+                        <label>TITULO</label>
+                        <input type="text" id="titulo" required>
+                    </div>
+                    <div class="campo">
+                        <label>AUTOR</label>
+                        <input type="text" id="autor" required>
+                    </div>
+                    <div class="campo">
+                        <label>ANO</label>
+                        <input type="number" id="ano" min="1" max="2026" required>
+                    </div>
+                    <div class="campo">
+                        <label>GENERO</label>
+                        <select id="genero" required>
+                            <option value="">-- SELECIONE --</option>
+                            <option value="Fantasia">FANTASIA</option>
+                            <option value="Ficcao">FICCAO</option>
+                            <option value="Terror">TERROR</option>
+                            <option value="Romance">ROMANCE</option>
+                            <option value="Aventura">AVENTURA</option>
+                            <option value="Misterio">MISTERIO</option>
+                            <option value="Historia">HISTORIA</option>
+                            <option value="Biografia">BIOGRAFIA</option>
+                            <option value="Ciencia">CIENCIA</option>
+                            <option value="Outro">OUTRO</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>PAGINAS</label>
+                        <input type="number" id="paginas" min="1" required>
+                    </div>
+                    <div class="campo">
+                        <label>EDITORA</label>
+                        <input type="text" id="editora" required>
+                    </div>
+                    <div class="campo">
+                        <label>EDICAO</label>
+                        <input type="number" id="edicao" min="1" required>
+                    </div>
+                    <div id="mensagem"></div>
+                    <button type="submit" class="btn-salvar">INSERIR LIVRO &gt;&gt;</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>BIBLIOTECA v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById("form-cadastro").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                titulo:  document.getElementById("titulo").value,
+                autor:   document.getElementById("autor").value,
+                ano:     parseInt(document.getElementById("ano").value),
+                genero:  document.getElementById("genero").value,
+                paginas: parseInt(document.getElementById("paginas").value),
+                editora: document.getElementById("editora").value,
+                edicao:  parseInt(document.getElementById("edicao").value)
+            };
+
+            const resultado = await cadastrarLivro(dados);
+            const mensagem = document.getElementById("mensagem");
+
+            if (resultado.id) {
+                mensagem.className = "sucesso";
+                mensagem.textContent = ">> LIVRO SALVO COM SUCESSO!";
+                setTimeout(() => window.location.href = "index.html", 1500);
+            } else {
+                mensagem.className = "erro-msg";
+                mensagem.textContent = ">> ERRO! VERIFIQUE OS CAMPOS.";
+            }
+        });
+    </script>
+
+</body>
+</html>

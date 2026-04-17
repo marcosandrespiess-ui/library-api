@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Biblioteca</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>[ MINHA BIBLIOTECA ]</h1>
+        <span class="header-coins" id="total-livros">LIVROS: 0</span>
+        <a href="cadastrar.html" class="btn-novo">+ NOVO LIVRO</a>
+    </header>
+
+    <nav>
+        <a class="nav-item active">TODOS</a>
+        <a class="nav-item">FANTASIA</a>
+        <a class="nav-item">FICCAO</a>
+        <a class="nav-item">TERROR</a>
+        <a class="nav-item">ROMANCE</a>
+    </nav>
+
+    <main>
+        <div class="stats">
+            <div class="stat">LIVROS<span id="stat-livros">0</span></div>
+            <div class="stat">PAGINAS<span id="stat-paginas">0</span></div>
+            <div class="stat">GENEROS<span id="stat-generos">0</span></div>
+        </div>
+        <div class="blink">&gt;&gt; SELECIONE UM LIVRO &lt;&lt;</div>
+        <div class="section-title">&gt; ACERVO_</div>
+        <div class="grid" id="lista-livros"></div>
+    </main>
+
+    <footer>BIBLIOTECA v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function carregarLivros() {
+            const livros = await listarLivros();
+            const lista = document.getElementById("lista-livros");
+
+            document.getElementById("stat-livros").textContent = livros.length;
+            document.getElementById("stat-paginas").textContent = livros.reduce((s, l) => s + l.paginas, 0);
+            document.getElementById("stat-generos").textContent = new Set(livros.map(l => l.genero)).size;
+            document.getElementById("total-livros").textContent = `LIVROS: ${livros.length}`;
+
+            if (livros.length === 0) {
+                lista.innerHTML = "<p class='vazio'>NENHUM LIVRO CADASTRADO<br>PRESSIONE + NOVO LIVRO</p>";
+                return;
+            }
+
+            lista.innerHTML = livros.map(livro => `
+                <div class="card ${livro.genero}">
+                    <div class="card-badge">${livro.genero.toUpperCase()}</div>
+                    <div class="card-title">${livro.titulo.toUpperCase()}</div>
+                    <div class="card-field"><span class="card-label">AUTOR</span><span class="card-value">${livro.autor.toUpperCase()}</span></div>
+                    <div class="card-field"><span class="card-label">ANO</span><span class="card-value">${livro.ano}</span></div>
+                    <div class="card-field"><span class="card-label">PAGINAS</span><span class="card-value">${livro.paginas}</span></div>
+                    <div class="card-field"><span class="card-label">EDITORA</span><span class="card-value">${livro.editora.toUpperCase()}</span></div>
+                    <div class="card-actions">
+                        <a href="editar.html?id=${livro.id}" class="btn-editar">EDIT</a>
+                        <button class="btn-deletar" onclick="confirmarDelete(${livro.id})">DEL</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function confirmarDelete(id) {
+            if (confirm("DELETAR ESTE LIVRO?")) {
+                await deletarLivro(id);
+                carregarLivros();
+            }
+        }
+
+        carregarLivros();
+    </script>
+
+</body>
+</html>
