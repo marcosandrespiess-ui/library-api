@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.services.livro_service import LivroService
-from app.repositories.livro_repository import LivroRepository
-from app.schemas.livro_schema import LivroSchema
+from app.livros.service import LivroService
+from app.livros.repository import LivroRepository
+from app.livros.schema import LivroSchema
 from pydantic import ValidationError
 
 livro_bp = Blueprint("livros", __name__)

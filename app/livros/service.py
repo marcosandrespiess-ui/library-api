@@ -1,5 +1,5 @@
-from app.models.livro import Livro
-from app.repositories.livro_repository import LivroRepository
+from app.livros.model import Livro
+from app.livros.repository import LivroRepository
 
 class LivroService:
     def __init__(self, repository=None):

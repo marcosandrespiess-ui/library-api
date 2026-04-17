@@ -1,4 +1,4 @@
-from app.models.livro import db, Livro
+from app.livros.model import db, Livro
 
 class LivroRepository:
     def listar_todos(self):

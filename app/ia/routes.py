@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.services.ia_service import autocompletar_livro
+from app.ia.service import autocompletar_livro
 
 ia_bp = Blueprint("ia", __name__)
 

@@ -1,4 +1,4 @@
-from app.services.livro_service import LivroService
+from app.livros.service import LivroService
 
 class RepositorioFalso:
     def __init__(self):
