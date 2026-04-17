@@ -25,8 +25,13 @@
                 <form id="form-cadastro">
                     <div class="campo">
                         <label>TITULO</label>
-                        <input type="text" id="titulo" required>
+                        <div class="campo-ia">
+                            <input type="text" id="titulo" required>
+                            <button type="button" id="btn-ia" class="btn-ia" onclick="autocompletar()">IA ✦</button>
+                        </div>
+                        <span class="ia-hint">Digite o título e clique em IA para preencher automaticamente</span>
                     </div>
+                    <div id="ia-loading" class="ia-loading">⏳ BUSCANDO INFORMAÇÕES...</div>
                     <div class="campo">
                         <label>AUTOR</label>
                         <input type="text" id="autor" required>
@@ -74,6 +79,47 @@
 
     <script src="js/api.js"></script>
     <script>
+        async function autocompletar() {
+            const titulo = document.getElementById("titulo").value;
+            if (!titulo) {
+                alert("DIGITE UM TÍTULO PRIMEIRO!");
+                return;
+            }
+
+            const btn = document.getElementById("btn-ia");
+            const loading = document.getElementById("ia-loading");
+
+            btn.disabled = true;
+            btn.textContent = "...";
+            loading.style.display = "block";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/livros/autocompletar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ titulo })
+                });
+
+                const dados = await response.json();
+
+                if (dados.titulo) {
+                    document.getElementById("titulo").value  = dados.titulo;
+                    document.getElementById("autor").value   = dados.autor;
+                    document.getElementById("ano").value     = dados.ano;
+                    document.getElementById("genero").value  = dados.genero;
+                    document.getElementById("paginas").value = dados.paginas;
+                    document.getElementById("editora").value = dados.editora;
+                    document.getElementById("edicao").value  = dados.edicao;
+                }
+            } catch (e) {
+                alert("ERRO AO BUSCAR INFORMAÇÕES!");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "IA ✦";
+                loading.style.display = "none";
+            }
+        }
+
         document.getElementById("form-cadastro").addEventListener("submit", async (e) => {
             e.preventDefault();
 

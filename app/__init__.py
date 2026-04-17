@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from app.models.livro import db
 from app.routes.livro_routes import livro_bp
+from app.routes.ia_routes import ia_bp
 from app.errors import registrar_erros
 from dotenv import load_dotenv
 import os
@@ -22,6 +23,7 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(livro_bp)
+    app.register_blueprint(ia_bp)
     registrar_erros(app)
 
     return app

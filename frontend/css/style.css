@@ -338,3 +338,46 @@ input[type="number"] { -moz-appearance: textfield; }
     margin-bottom: 12px;
     text-align: center;
 }
+
+.campo-ia {
+    display: flex;
+    gap: 8px;
+}
+
+.campo-ia input {
+    flex: 1;
+}
+
+.btn-ia {
+    background: #ffd60a;
+    color: #333;
+    border: 3px solid #e9a800;
+    box-shadow: 3px 3px 0 #c17f00;
+    padding: 8px 12px;
+    font-size: 8px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
+    white-space: nowrap;
+}
+
+.btn-ia:hover { background: #ffe566; }
+.btn-ia:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ia-hint {
+    font-size: 6px;
+    color: #457b9d;
+    margin-top: 4px;
+    line-height: 1.8;
+}
+
+.ia-loading {
+    display: none;
+    background: #0f3460;
+    color: #ffd60a;
+    border: 3px solid #ffd60a;
+    padding: 10px;
+    font-size: 7px;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: blink 0.8s step-end infinite;
+}
