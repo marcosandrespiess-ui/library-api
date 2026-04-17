@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from app.livros.model import db
+from app.extensions import db
 from app.livros.routes import livro_bp
 from app.ia.routes import ia_bp
 from app.errors import registrar_erros
