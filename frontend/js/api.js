@@ -34,3 +34,38 @@ async function deletarLivro(id) {
     });
     return await response.json();
 }
+
+async function listarJogos() {
+    const response = await fetch(`${API_URL}/jogos`);
+    return await response.json();
+}
+
+async function buscarJogo(id) {
+    const response = await fetch(`${API_URL}/jogos/${id}`);
+    return await response.json();
+}
+
+async function cadastrarJogo(dados) {
+    const response = await fetch(`${API_URL}/jogos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+    });
+    return await response.json();
+}
+
+async function atualizarJogo(id, dados) {
+    const response = await fetch(`${API_URL}/jogos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+    });
+    return await response.json();
+}
+
+async function deletarJogo(id) {
+    const response = await fetch(`${API_URL}/jogos/${id}`, {
+        method: "DELETE"
+    });
+    return await response.json();
+}

@@ -381,3 +381,6 @@ input[type="number"] { -moz-appearance: textfield; }
     margin-bottom: 12px;
     animation: blink 0.8s step-end infinite;
 }
+
+.card.jogo { border-color: #118ab2; box-shadow: 4px 4px 0 #118ab2; }
+.card.jogo .card-badge { background: #118ab2; color: #fff; border-color: #0a6685; }

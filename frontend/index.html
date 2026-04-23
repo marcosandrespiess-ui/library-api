@@ -3,51 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Biblioteca</title>
+    <title>Minha Coleção</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
     <header>
-        <h1>[ MINHA BIBLIOTECA ]</h1>
-        <span class="header-coins" id="total-livros">LIVROS: 0</span>
-        <a href="cadastrar.html" class="btn-novo">+ NOVO LIVRO</a>
+        <h1>[ MINHA COLEÇÃO ]</h1>
+        <span class="header-coins" id="total-itens">ITENS: 0</span>
+        <a href="cadastrar.html" class="btn-novo" id="btn-novo">+ NOVO</a>
     </header>
 
     <nav>
-        <a class="nav-item active">TODOS</a>
-        <a class="nav-item">FANTASIA</a>
-        <a class="nav-item">FICCAO</a>
-        <a class="nav-item">TERROR</a>
-        <a class="nav-item">ROMANCE</a>
+        <a class="nav-item active" onclick="trocarColecao('livros')">LIVROS</a>
+        <a class="nav-item" onclick="trocarColecao('jogos')">JOGOS</a>
     </nav>
 
     <main>
-        <div class="stats">
-            <div class="stat">LIVROS<span id="stat-livros">0</span></div>
-            <div class="stat">PAGINAS<span id="stat-paginas">0</span></div>
-            <div class="stat">GENEROS<span id="stat-generos">0</span></div>
-        </div>
-        <div class="blink">&gt;&gt; SELECIONE UM LIVRO &lt;&lt;</div>
-        <div class="section-title">&gt; ACERVO_</div>
-        <div class="grid" id="lista-livros"></div>
+        <div class="stats" id="stats"></div>
+        <div class="blink" id="blink-msg">&gt;&gt; SELECIONE UM ITEM &lt;&lt;</div>
+        <div class="section-title" id="section-title">&gt; ACERVO_</div>
+        <div class="grid" id="lista-itens"></div>
     </main>
 
-    <footer>BIBLIOTECA v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
+    <footer>COLEÇÃO v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
 
     <script src="js/api.js"></script>
     <script>
+        let colecaoAtual = "livros";
+
+        function trocarColecao(colecao) {
+            colecaoAtual = colecao;
+
+            document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+            event.target.classList.add("active");
+
+            const btnNovo = document.getElementById("btn-novo");
+            btnNovo.href = colecao === "livros" ? "cadastrar.html" : "cadastrar-jogo.html";
+
+            carregarItens();
+        }
+
+        async function carregarItens() {
+            if (colecaoAtual === "livros") {
+                await carregarLivros();
+            } else {
+                await carregarJogos();
+            }
+        }
+
         async function carregarLivros() {
             const livros = await listarLivros();
-            const lista = document.getElementById("lista-livros");
+            const lista = document.getElementById("lista-itens");
 
-            document.getElementById("stat-livros").textContent = livros.length;
-            document.getElementById("stat-paginas").textContent = livros.reduce((s, l) => s + l.paginas, 0);
-            document.getElementById("stat-generos").textContent = new Set(livros.map(l => l.genero)).size;
-            document.getElementById("total-livros").textContent = `LIVROS: ${livros.length}`;
+            document.getElementById("total-itens").textContent = `LIVROS: ${livros.length}`;
+            document.getElementById("section-title").textContent = "> BIBLIOTECA_";
+            document.getElementById("stats").innerHTML = `
+                <div class="stat">LIVROS<span>${livros.length}</span></div>
+                <div class="stat">PAGINAS<span>${livros.reduce((s, l) => s + l.paginas, 0)}</span></div>
+                <div class="stat">GENEROS<span>${new Set(livros.map(l => l.genero)).size}</span></div>
+            `;
 
             if (livros.length === 0) {
-                lista.innerHTML = "<p class='vazio'>NENHUM LIVRO CADASTRADO<br>PRESSIONE + NOVO LIVRO</p>";
+                lista.innerHTML = "<p class='vazio'>NENHUM LIVRO CADASTRADO<br>PRESSIONE + NOVO</p>";
                 return;
             }
 
@@ -61,16 +79,50 @@
                     <div class="card-field"><span class="card-label">EDITORA</span><span class="card-value">${livro.editora.toUpperCase()}</span></div>
                     <div class="card-actions">
                         <a href="editar.html?id=${livro.id}" class="btn-editar">EDIT</a>
-                        <button class="btn-deletar" onclick="confirmarDelete(${livro.id})">DEL</button>
+                        <button class="btn-deletar" onclick="confirmarDelete('livros', ${livro.id})">DEL</button>
                     </div>
                 </div>
             `).join("");
         }
 
-        async function confirmarDelete(id) {
-            if (confirm("DELETAR ESTE LIVRO?")) {
-                await deletarLivro(id);
-                carregarLivros();
+        async function carregarJogos() {
+            const jogos = await listarJogos();
+            const lista = document.getElementById("lista-itens");
+
+            document.getElementById("total-itens").textContent = `JOGOS: ${jogos.length}`;
+            document.getElementById("section-title").textContent = "> JOGOS_";
+            document.getElementById("stats").innerHTML = `
+                <div class="stat">JOGOS<span>${jogos.length}</span></div>
+                <div class="stat">PLATAFORMAS<span>${new Set(jogos.flatMap(j => j.plataformas)).size}</span></div>
+                <div class="stat">GENEROS<span>${new Set(jogos.flatMap(j => j.generos)).size}</span></div>
+            `;
+
+            if (jogos.length === 0) {
+                lista.innerHTML = "<p class='vazio'>NENHUM JOGO CADASTRADO<br>PRESSIONE + NOVO</p>";
+                return;
+            }
+
+            lista.innerHTML = jogos.map(jogo => `
+                <div class="card jogo">
+                    <div class="card-badge">${jogo.plataformas[0] ? jogo.plataformas[0].toUpperCase() : "?"}</div>
+                    <div class="card-title">${jogo.nome.toUpperCase()}</div>
+                    <div class="card-field"><span class="card-label">DEVELOPER</span><span class="card-value">${jogo.desenvolvedora.toUpperCase()}</span></div>
+                    <div class="card-field"><span class="card-label">ANO</span><span class="card-value">${jogo.ano}</span></div>
+                    <div class="card-field"><span class="card-label">GENERO</span><span class="card-value">${jogo.generos.join(", ").toUpperCase()}</span></div>
+                    <div class="card-field"><span class="card-label">MODO</span><span class="card-value">${jogo.modos.join(", ").toUpperCase()}</span></div>
+                    <div class="card-actions">
+                        <a href="editar-jogo.html?id=${jogo.id}" class="btn-editar">EDIT</a>
+                        <button class="btn-deletar" onclick="confirmarDelete('jogos', ${jogo.id})">DEL</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function confirmarDelete(colecao, id) {
+            if (confirm("DELETAR ESTE ITEM?")) {
+                if (colecao === "livros") await deletarLivro(id);
+                else await deletarJogo(id);
+                carregarItens();
             }
         }
 
