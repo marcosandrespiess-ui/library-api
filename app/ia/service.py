@@ -55,7 +55,8 @@ Formato exato:
     "subgenero": "subgênero do jogo ou null",
     "plataformas": ["lista", "de", "plataformas"],
     "generos": ["lista", "de", "generos"],
-    "modos": ["Single-player", "Multiplayer", etc]
+    "modos": ["Single-player", "Multiplayer"],
+    "capa_url": "URL direta de uma imagem da capa do jogo no wikipedia ou igdb ou similar"
 }}
 
 Se não souber alguma informação, use valores padrão razoáveis."""
@@ -63,13 +64,10 @@ Se não souber alguma informação, use valores padrão razoáveis."""
     message = client.messages.create(
         model="claude-opus-4-5",
         max_tokens=1024,
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+        messages=[{"role": "user", "content": prompt}]
     )
 
     texto = message.content[0].text.strip()
-
     if texto.startswith("```"):
         texto = texto.split("```")[1]
         if texto.startswith("json"):

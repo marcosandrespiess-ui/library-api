@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 from app.extensions import db
 from app.livros.routes import livro_bp
 from app.jogos.routes import jogos_bp
@@ -18,6 +19,7 @@ def create_app():
 
     CORS(app)
     db.init_app(app)
+    Migrate(app, db)
 
     with app.app_context():
         db.create_all()

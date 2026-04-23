@@ -4,6 +4,7 @@ from app.livros.repository import LivroRepository
 from app.livros.schema import LivroSchema
 from pydantic import ValidationError
 
+
 livro_bp = Blueprint("livros", __name__)
 service = LivroService(repository=LivroRepository())
 
@@ -25,6 +26,7 @@ def cadastrar_livro():
         dados = LivroSchema(**request.get_json())
     except ValidationError as e:
         return jsonify({"erro": e.errors()}), 400
+    
     livro = service.cadastrar(dados.model_dump())
     return jsonify(livro.to_dict()), 201
 

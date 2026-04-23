@@ -9,6 +9,7 @@ class Livro(db.Model):
     paginas = db.Column(db.Integer, nullable=False)
     editora = db.Column(db.String(200), nullable=False)
     edicao = db.Column(db.Integer, nullable=False)
+    capa_url = db.Column(db.String(500), nullable=True)
 
     def to_dict(self):
         return {
@@ -19,5 +20,6 @@ class Livro(db.Model):
             "genero": self.genero,
             "paginas": self.paginas,
             "editora": self.editora,
-            "edicao": self.edicao
+            "edicao": self.edicao,
+            "capa_url": self.capa_url
         }

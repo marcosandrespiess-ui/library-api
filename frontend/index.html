@@ -34,13 +34,10 @@
 
         function trocarColecao(colecao) {
             colecaoAtual = colecao;
-
             document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
             event.target.classList.add("active");
-
             const btnNovo = document.getElementById("btn-novo");
             btnNovo.href = colecao === "livros" ? "cadastrar.html" : "cadastrar-jogo.html";
-
             carregarItens();
         }
 
@@ -72,6 +69,7 @@
             lista.innerHTML = livros.map(livro => `
                 <div class="card ${livro.genero}">
                     <div class="card-badge">${livro.genero.toUpperCase()}</div>
+                    ${livro.capa_url ? `<img src="${livro.capa_url}" alt="${livro.titulo}" class="card-capa">` : ''}
                     <div class="card-title">${livro.titulo.toUpperCase()}</div>
                     <div class="card-field"><span class="card-label">AUTOR</span><span class="card-value">${livro.autor.toUpperCase()}</span></div>
                     <div class="card-field"><span class="card-label">ANO</span><span class="card-value">${livro.ano}</span></div>
@@ -105,6 +103,7 @@
             lista.innerHTML = jogos.map(jogo => `
                 <div class="card jogo">
                     <div class="card-badge">${jogo.plataformas[0] ? jogo.plataformas[0].toUpperCase() : "?"}</div>
+                    ${jogo.capa_url ? `<img src="${jogo.capa_url}" alt="${jogo.nome}" class="card-capa">` : ''}
                     <div class="card-title">${jogo.nome.toUpperCase()}</div>
                     <div class="card-field"><span class="card-label">DEVELOPER</span><span class="card-value">${jogo.desenvolvedora.toUpperCase()}</span></div>
                     <div class="card-field"><span class="card-label">ANO</span><span class="card-value">${jogo.ano}</span></div>

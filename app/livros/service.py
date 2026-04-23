@@ -1,5 +1,6 @@
 from app.livros.model import Livro
 from app.livros.repository import LivroRepository
+from app.ia.capa_service import buscar_capa_livro
 
 class LivroService:
     def __init__(self, repository=None):
@@ -12,6 +13,7 @@ class LivroService:
         return self.repository.buscar_por_id(id)
 
     def cadastrar(self, dados):
+        capa_url = buscar_capa_livro(dados["titulo"], dados.get("autor"))
         livro = Livro(
             titulo=dados["titulo"],
             autor=dados["autor"],
@@ -19,7 +21,8 @@ class LivroService:
             genero=dados["genero"],
             paginas=dados["paginas"],
             editora=dados["editora"],
-            edicao=dados["edicao"]
+            edicao=dados["edicao"],
+            capa_url=capa_url
         )
         return self.repository.salvar(livro)
 

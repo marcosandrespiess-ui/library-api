@@ -384,3 +384,13 @@ input[type="number"] { -moz-appearance: textfield; }
 
 .card.jogo { border-color: #118ab2; box-shadow: 4px 4px 0 #118ab2; }
 .card.jogo .card-badge { background: #118ab2; color: #fff; border-color: #0a6685; }
+
+.card-capa {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: top;
+    border: 2px solid #1d3557;
+    margin-bottom: 10px;
+    image-rendering: pixelated;
+}
