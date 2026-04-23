@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Jogo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>[ MINHA COLEÇÃO ]</h1>
+        <span class="header-coins">NOVO JOGO</span>
+        <a href="index.html" class="btn-novo">← VOLTAR</a>
+    </header>
+
+    <nav>
+        <a href="index.html" class="nav-item">TODOS</a>
+    </nav>
+
+    <main>
+        <div class="form-container">
+            <div class="form-card">
+                <h2>&gt; CADASTRAR JOGO_</h2>
+                <form id="form-cadastro">
+                    <div class="campo">
+                        <label>NOME DO JOGO</label>
+                        <div class="campo-ia">
+                            <input type="text" id="nome" required>
+                            <button type="button" id="btn-ia" class="btn-ia">IA ✦</button>
+                        </div>
+                        <span class="ia-hint">Digite o nome e clique em IA para preencher automaticamente</span>
+                    </div>
+                    <div id="ia-loading" class="ia-loading">⏳ BUSCANDO INFORMAÇÕES...</div>
+                    <div class="campo">
+                        <label>ANO</label>
+                        <input type="number" id="ano" min="1951" max="2026" required>
+                    </div>
+                    <div class="campo">
+                        <label>DESENVOLVEDORA</label>
+                        <input type="text" id="desenvolvedora" required>
+                    </div>
+                    <div class="campo">
+                        <label>SUBGENERO</label>
+                        <input type="text" id="subgenero" placeholder="Opcional...">
+                    </div>
+                    <div class="campo">
+                        <label>PLATAFORMAS (separadas por vírgula)</label>
+                        <input type="text" id="plataformas" placeholder="PC, PS5, Xbox..." required>
+                    </div>
+                    <div class="campo">
+                        <label>GENEROS (separados por vírgula)</label>
+                        <input type="text" id="generos" placeholder="Acao, RPG..." required>
+                    </div>
+                    <div class="campo">
+                        <label>MODOS (separados por vírgula)</label>
+                        <input type="text" id="modos" placeholder="Single-player, Multiplayer..." required>
+                    </div>
+                    <div id="mensagem"></div>
+                    <button type="submit" class="btn-salvar">INSERIR JOGO &gt;&gt;</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>COLEÇÃO v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function autocompletar() {
+            const nome = document.getElementById("nome").value;
+            if (!nome) {
+                alert("DIGITE O NOME DO JOGO PRIMEIRO!");
+                return;
+            }
+
+            const btn = document.getElementById("btn-ia");
+            const loading = document.getElementById("ia-loading");
+
+            btn.disabled = true;
+            btn.textContent = "...";
+            loading.style.display = "block";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/jogos/autocompletar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome })
+                });
+
+                const dados = await response.json();
+
+                if (dados.nome) {
+                    document.getElementById("nome").value = dados.nome;
+                    document.getElementById("ano").value = dados.ano;
+                    document.getElementById("desenvolvedora").value = dados.desenvolvedora;
+                    document.getElementById("subgenero").value = dados.subgenero || "";
+                    document.getElementById("plataformas").value = dados.plataformas.join(", ");
+                    document.getElementById("generos").value = dados.generos.join(", ");
+                    document.getElementById("modos").value = dados.modos.join(", ");
+                }
+            } catch (e) {
+                alert("ERRO AO BUSCAR INFORMAÇÕES!");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "IA ✦";
+                loading.style.display = "none";
+            }
+        }
+
+        document.getElementById("btn-ia").addEventListener("click", autocompletar);
+
+        document.getElementById("form-cadastro").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                nome: document.getElementById("nome").value,
+                ano: parseInt(document.getElementById("ano").value),
+                desenvolvedora: document.getElementById("desenvolvedora").value,
+                subgenero: document.getElementById("subgenero").value || null,
+                plataformas: document.getElementById("plataformas").value.split(",").map(s => s.trim()).filter(s => s),
+                generos: document.getElementById("generos").value.split(",").map(s => s.trim()).filter(s => s),
+                modos: document.getElementById("modos").value.split(",").map(s => s.trim()).filter(s => s)
+            };
+
+            const resultado = await cadastrarJogo(dados);
+            const mensagem = document.getElementById("mensagem");
+
+            if (resultado.id) {
+                mensagem.className = "sucesso";
+                mensagem.textContent = ">> JOGO SALVO COM SUCESSO!";
+                setTimeout(() => window.location.href = "index.html", 1500);
+            } else {
+                mensagem.className = "erro-msg";
+                mensagem.textContent = ">> ERRO! VERIFIQUE OS CAMPOS.";
+            }
+        });
+    </script>
+
+</body>
+</html>
