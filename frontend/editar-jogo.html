@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Jogo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>[ MINHA COLEÇÃO ]</h1>
+        <span class="header-coins">EDITAR JOGO</span>
+        <a href="index.html" class="btn-novo">← VOLTAR</a>
+    </header>
+
+    <nav>
+        <a href="index.html" class="nav-item">TODOS</a>
+    </nav>
+
+    <main>
+        <div class="form-container">
+            <div class="form-card">
+                <h2>&gt; EDITAR JOGO_</h2>
+                <form id="form-editar">
+                    <div class="campo">
+                        <label>NOME DO JOGO</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div class="campo">
+                        <label>ANO</label>
+                        <input type="number" id="ano" min="1951" max="2026" required>
+                    </div>
+                    <div class="campo">
+                        <label>DESENVOLVEDORA</label>
+                        <input type="text" id="desenvolvedora" required>
+                    </div>
+                    <div class="campo">
+                        <label>SUBGENERO</label>
+                        <input type="text" id="subgenero" placeholder="Opcional...">
+                    </div>
+                    <div class="campo">
+                        <label>PLATAFORMAS (separadas por vírgula)</label>
+                        <input type="text" id="plataformas" required>
+                    </div>
+                    <div class="campo">
+                        <label>GENEROS (separados por vírgula)</label>
+                        <input type="text" id="generos" required>
+                    </div>
+                    <div class="campo">
+                        <label>MODOS (separados por vírgula)</label>
+                        <input type="text" id="modos" required>
+                    </div>
+                    <div id="mensagem"></div>
+                    <button type="submit" class="btn-salvar">SALVAR ALTERACOES &gt;&gt;</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>COLEÇÃO v1.0 &nbsp;|&nbsp; COPYRIGHT 2026 &nbsp;|&nbsp; INSERT COIN</footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        async function carregarJogo() {
+            if (!id) {
+                window.location.href = "index.html";
+                return;
+            }
+            const jogo = await buscarJogo(id);
+            document.getElementById("nome").value = jogo.nome;
+            document.getElementById("ano").value = jogo.ano;
+            document.getElementById("desenvolvedora").value = jogo.desenvolvedora;
+            document.getElementById("subgenero").value = jogo.subgenero || "";
+            document.getElementById("plataformas").value = jogo.plataformas.join(", ");
+            document.getElementById("generos").value = jogo.generos.join(", ");
+            document.getElementById("modos").value = jogo.modos.join(", ");
+        }
+
+        document.getElementById("form-editar").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                nome: document.getElementById("nome").value,
+                ano: parseInt(document.getElementById("ano").value),
+                desenvolvedora: document.getElementById("desenvolvedora").value,
+                subgenero: document.getElementById("subgenero").value || null,
+                plataformas: document.getElementById("plataformas").value.split(",").map(s => s.trim()).filter(s => s),
+                generos: document.getElementById("generos").value.split(",").map(s => s.trim()).filter(s => s),
+                modos: document.getElementById("modos").value.split(",").map(s => s.trim()).filter(s => s)
+            };
+
+            const resultado = await atualizarJogo(id, dados);
+            const mensagem = document.getElementById("mensagem");
+
+            if (resultado.id) {
+                mensagem.className = "sucesso";
+                mensagem.textContent = ">> JOGO ATUALIZADO!";
+                setTimeout(() => window.location.href = "index.html", 1500);
+            } else {
+                mensagem.className = "erro-msg";
+                mensagem.textContent = ">> ERRO! TENTE NOVAMENTE.";
+            }
+        });
+
+        carregarJogo();
+    </script>
+
+</body>
+</html>
